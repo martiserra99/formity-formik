@@ -1,7 +1,6 @@
 import type { Schema, Form, Return, Cond } from "@formity/react";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import * as Yup from "yup";
 
 import {
   FormStep,
@@ -58,23 +57,19 @@ export const schema: Schema<Values> = [
         <MultiStep onNext={onNext} onBack={onBack}>
           <FormStep
             key="yourself"
-            defaultValues={values}
-            resolver={zodResolver(
-              z.object({
-                name: z
-                  .string()
-                  .min(1, { message: "Required" })
-                  .max(20, { message: "Must be at most 20 characters" }),
-                surname: z
-                  .string()
-                  .min(1, { message: "Required" })
-                  .max(20, { message: "Must be at most 20 characters" }),
-                age: z
-                  .number()
-                  .min(18, { message: "Minimum of 18 years old" })
-                  .max(99, { message: "Maximum of 99 years old" }),
-              }),
-            )}
+            initialValues={values}
+            validationSchema={Yup.object({
+              name: Yup.string()
+                .required("Required")
+                .max(20, "Must be at most 20 characters"),
+              surname: Yup.string()
+                .required("Required")
+                .max(20, "Must be at most 20 characters"),
+              age: Yup.number()
+                .required()
+                .min(18, "Minimum of 18 years old")
+                .max(99, "Maximum of 99 years old"),
+            })}
           >
             <FormStepContent>
               <FormStepHeading>Tell us about yourself</FormStepHeading>
@@ -105,12 +100,10 @@ export const schema: Schema<Values> = [
         <MultiStep onNext={onNext} onBack={onBack}>
           <FormStep
             key="softwareDeveloper"
-            defaultValues={values}
-            resolver={zodResolver(
-              z.object({
-                softwareDeveloper: z.string(),
-              }),
-            )}
+            initialValues={values}
+            validationSchema={Yup.object({
+              softwareDeveloper: Yup.string().required(),
+            })}
           >
             <FormStepContent>
               <FormStepHeading>Are you a software developer?</FormStepHeading>
@@ -147,12 +140,10 @@ export const schema: Schema<Values> = [
               <MultiStep onNext={onNext} onBack={onBack}>
                 <FormStep
                   key="expertise"
-                  defaultValues={values}
-                  resolver={zodResolver(
-                    z.object({
-                      expertise: z.string(),
-                    }),
-                  )}
+                  initialValues={values}
+                  validationSchema={Yup.object({
+                    expertise: Yup.string().required(),
+                  })}
                 >
                   <FormStepContent>
                     <FormStepHeading>
@@ -199,12 +190,10 @@ export const schema: Schema<Values> = [
               <MultiStep onNext={onNext} onBack={onBack}>
                 <FormStep
                   key="interested"
-                  defaultValues={values}
-                  resolver={zodResolver(
-                    z.object({
-                      interested: z.string(),
-                    }),
-                  )}
+                  initialValues={values}
+                  validationSchema={Yup.object({
+                    interested: Yup.string().required(),
+                  })}
                 >
                   <FormStepContent>
                     <FormStepHeading>

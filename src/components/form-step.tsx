@@ -1,28 +1,32 @@
 import type { ReactNode } from "react";
-import type { DefaultValues, Resolver } from "react-hook-form";
 
-import { FormProvider, useForm } from "react-hook-form";
+import { useFormik, FormikProvider } from "formik";
 import { useMultiStep } from "@/multi-step";
 
 interface FormStepProps<T extends Record<string, unknown>> {
-  defaultValues: DefaultValues<T>;
-  resolver: Resolver<T>;
+  initialValues: T;
+  validationSchema: object;
   children: ReactNode;
 }
 
 export function FormStep<T extends Record<string, unknown>>({
-  defaultValues,
-  resolver,
+  initialValues,
+  validationSchema,
   children,
 }: FormStepProps<T>) {
-  const form = useForm({ defaultValues, resolver });
   const { onNext } = useMultiStep();
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    onSubmit: onNext,
+  });
+
   return (
     <form
-      onSubmit={form.handleSubmit(onNext)}
+      onSubmit={formik.handleSubmit}
       className="relative flex h-screen w-full items-center justify-center px-4 py-8 font-sans"
     >
-      <FormProvider {...form}>{children}</FormProvider>
+      <FormikProvider value={formik}>{children}</FormikProvider>
     </form>
   );
 }

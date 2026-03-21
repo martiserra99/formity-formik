@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { useFormContext, Controller } from "react-hook-form";
+import { useFormikContext } from "formik";
 import { tv } from "tailwind-variants";
 
 interface TextInputProps {
@@ -9,21 +9,17 @@ interface TextInputProps {
 }
 
 export function TextInput({ name, label, placeholder }: TextInputProps) {
-  const { control, formState } = useFormContext();
-  const error = formState.errors[name] as { message: string } | undefined;
+  const formik = useFormikContext<Record<string, unknown>>();
+  const error = formik.touched[name]
+    ? (formik.errors[name] as string | undefined)
+    : undefined;
   return (
-    <Controller
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <Input
-          label={label}
-          value={field.value}
-          placeholder={placeholder}
-          onChange={field.onChange}
-          error={error}
-        />
-      )}
+    <Input
+      label={label}
+      value={formik.values[name] as string}
+      placeholder={placeholder}
+      onChange={(value) => formik.setFieldValue(name, value)}
+      error={error}
     />
   );
 }
@@ -43,7 +39,7 @@ interface InputProps {
   value: string;
   placeholder: string;
   onChange: (value: string) => void;
-  error: { message: string } | undefined;
+  error: string | undefined;
 }
 
 function Input({ label, value, placeholder, onChange, error }: InputProps) {
@@ -61,7 +57,7 @@ function Input({ label, value, placeholder, onChange, error }: InputProps) {
         className={input({ error: !!error })}
       />
       {error && (
-        <p className="mt-2 text-sm font-normal text-red-400">{error.message}</p>
+        <p className="mt-2 text-sm font-normal text-red-400">{error}</p>
       )}
     </div>
   );
