@@ -5,14 +5,16 @@ import { useFormikContext } from "formik";
 import { Button } from "../button";
 import { useMultiStep } from "@/multi-step";
 
-export function BackButton(props: ComponentPropsWithoutRef<"button">) {
-  const { values } = useFormikContext();
-  const { onBack } = useMultiStep();
+export function BackButton<T extends Record<string, unknown>>(
+  props: ComponentPropsWithoutRef<"button">,
+) {
+  const { values } = useFormikContext<T>();
+  const { onBack } = useMultiStep<T>();
   return (
     <Button
       type="button"
       variant="secondary"
-      onClick={() => onBack(values as object)}
+      onClick={() => onBack(values)}
       {...props}
     />
   );
